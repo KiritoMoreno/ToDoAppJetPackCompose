@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -32,16 +33,22 @@ import androidx.compose.ui.window.Dialog
 
 @Composable
 fun TasksScreen(tasksViewModel: TasksViewModel) {
+
+    val showDialog: Boolean by tasksViewModel.showDialog.observeAsState(initial = false)
     Box(modifier = Modifier.fillMaxSize()) {
-        AddTasksDialog(true, onDismiss = {}, onTaskAdded={})
-        FabDialog(Modifier.align(Alignment.BottomEnd))
+        AddTasksDialog(
+            true,
+            onDismiss = { tasksViewModel.onDialogClose() },
+            onTaskAdded = { tasksViewModel.onTasksCreated(it) })
+        FabDialog(Modifier.align(Alignment.BottomEnd), tasksViewModel)
 
     }
 }
 
 @Composable
-fun FabDialog(modifier: Modifier) {
+fun FabDialog(modifier: Modifier, tasksViewModel: TasksViewModel) {
     FloatingActionButton(onClick = { //Show Dialog
+        tasksViewModel.onShowDialogClick()
     }, modifier = Modifier.padding(16.dp)) {
         Icon(Icons.Filled.Add, contentDescription = "")
     }
@@ -49,7 +56,7 @@ fun FabDialog(modifier: Modifier) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddTasksDialog(show: Boolean, onDismiss: () -> Unit, onTaskAdded:(String) -> Unit) {
+fun AddTasksDialog(show: Boolean, onDismiss: () -> Unit, onTaskAdded: (String) -> Unit) {
     var myTask by remember { mutableStateOf("") }
 
     if (show) {
