@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.todoapp.addtasks.domain.AddTaskUseCase
+import com.example.todoapp.addtasks.domain.DeleteTaskUseCase
 import com.example.todoapp.addtasks.domain.GetTasksUseCase
 import com.example.todoapp.addtasks.domain.UpdateTaskUseCase
 import com.example.todoapp.addtasks.ui.TasksUiState.Success
@@ -24,6 +25,7 @@ import javax.inject.Inject
 class TasksViewModel @Inject constructor(
     private val addTaskUseCase: AddTaskUseCase,
     private val updateTaskUseCase: UpdateTaskUseCase,
+    private val deleteTaskUseCase: DeleteTaskUseCase,
     getTasksUiState: GetTasksUseCase
 ):ViewModel() {
 
@@ -36,7 +38,6 @@ class TasksViewModel @Inject constructor(
 
     fun onDialogClose(){
         _showDialog.value = false
-
     }
     fun onTasksCreated(task:String){
         _showDialog.value = false
@@ -54,6 +55,8 @@ class TasksViewModel @Inject constructor(
         }
     }
     fun onItemRemove(taskModel: TaskModel) {
-        
+        viewModelScope.launch {
+            deleteTaskUseCase(taskModel)
+        }
     }
 }
