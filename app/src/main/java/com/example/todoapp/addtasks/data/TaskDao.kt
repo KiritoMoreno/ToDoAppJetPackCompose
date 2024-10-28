@@ -3,6 +3,7 @@ package com.example.todoapp.addtasks.data
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 
@@ -14,4 +15,7 @@ interface TaskDao {
 
     @Insert
     suspend fun addTask(item:TaskEntity)
+
+    @Update
+    suspend fun updateTask(item: TaskEntity)
 }
