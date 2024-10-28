@@ -10,6 +10,7 @@ import com.example.todoapp.addtasks.domain.AddTaskUseCase
 import com.example.todoapp.addtasks.domain.GetTasksUseCase
 import com.example.todoapp.addtasks.ui.TasksUiState.Success
 import com.example.todoapp.addtasks.ui.model.TaskModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -18,6 +19,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class TasksViewModel @Inject constructor(
     private val addTaskUseCase: AddTaskUseCase,
     getTasksUiState: GetTasksUseCase
@@ -30,8 +32,8 @@ class TasksViewModel @Inject constructor(
     private val _showDialog = MutableLiveData<Boolean>()
     val showDialog: LiveData<Boolean> = _showDialog
 
-    private val _tasks = mutableStateListOf<TaskModel>()
-    val task:List<TaskModel> =_tasks
+    //private val _tasks = mutableStateListOf<TaskModel>()
+    //val task:List<TaskModel> =_tasks
 
     fun onDialogClose(){
         _showDialog.value = false
@@ -39,7 +41,6 @@ class TasksViewModel @Inject constructor(
     }
     fun onTasksCreated(task:String){
         _showDialog.value = false
-        _tasks.add(TaskModel(task= task))
 
         viewModelScope.launch {
             addTaskUseCase(TaskModel(task=task))
@@ -49,13 +50,14 @@ class TasksViewModel @Inject constructor(
         _showDialog.value = true
     }
     fun onCheckBoxSelected(taskModel: TaskModel){
-        val index = _tasks.indexOf(taskModel)
-        if (index != -1){
-            _tasks[index] = taskModel.copy(selected = !taskModel.selected)
-        }
+        //Update check
+        //val index = _tasks.indexOf(taskModel)
+        //if (index != -1){
+        //    _tasks[index] = taskModel.copy(selected = !taskModel.selected)
+        //}
     }
     fun onItemRemove(taskModel: TaskModel) {
-        val task = _tasks.find { it.id == taskModel.id }
-        _tasks.remove(task)
+        //val task = _tasks.find { it.id == taskModel.id }
+        //_tasks.remove(task)
     }
 }
